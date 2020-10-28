@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #app {
+        display: grid;
+        grid-template-columns: 100px 100px 100px;
+        grid-template-rows: 100px 100px 100px;
+      }
+      .cell {
+        border: 1px solid #fff;
+        background-color: bisque;
+        font-size: 50px;
+        line-height: 100px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      // 单元格集合
+      // 1 是 ❌
+      // 2 是 ⭕️
+      const pattern = [
+        [0, 1, 2],
+        [0, 0, 0],
+        [0, 0, 0],
+      ]
+      const symbol1 = '❌'
+      const symbol2 = '⭕️'
+
+      // '❌'先下
+      let color = 1;
+
+
+      // 渲染网格符号
+      function show() {
+        const boxEl = document.querySelector('#app')
+        // 遍历前清空原本的dom
+        boxEl.innerHTML = ''
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            // 每个数组列生成div 循环增加到dom中
+            let cell = document.createElement('div')
+            cell.addEventListener('click', () => {
+              pieceClick(i, j)
+            })
+            cell.classList.add('cell')
+            cell.innerText =
+              pattern[i][j] === 1 ? symbol1 : pattern[i][j] === 2 ? symbol2 : ''
+            boxEl.appendChild(cell)
+          }
+        }
+      }
+
+      // 处理棋盘点击，渲染对应的符号
+      function pieceClick(x, y) {
+        pattern[x][y] = color;
+        color = 3 - color
+        show()
+      }
+     
+
+      show()
+    </script>
+  </body>
+</html>
