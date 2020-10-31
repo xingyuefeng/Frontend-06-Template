@@ -26,7 +26,7 @@
       // 1 是 ❌
       // 2 是 ⭕️
       const pattern = [
-        [0, 1, 2],
+        [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0],
       ]
@@ -34,8 +34,7 @@
       const symbol2 = '⭕️'
 
       // '❌'先下
-      let color = 1;
-
+      let color = 1
 
       // 渲染网格符号
       function show() {
@@ -47,7 +46,7 @@
             // 每个数组列生成div 循环增加到dom中
             let cell = document.createElement('div')
             cell.addEventListener('click', () => {
-              pieceClick(i, j)
+              move(i, j)
             })
             cell.classList.add('cell')
             cell.innerText =
@@ -58,12 +57,85 @@
       }
 
       // 处理棋盘点击，渲染对应的符号
-      function pieceClick(x, y) {
-        pattern[x][y] = color;
+      function move(x, y) {
+        pattern[x][y] = color
+        if (check(pattern, color)) {
+          alert(`${color === 1 ? symbol1 : symbol2}是胜利者`)
+        }
         color = 3 - color
         show()
+        if (willWin(pattern, color)) {
+          alert(`${color === 1 ? symbol1 : symbol2}将要赢了`)
+        }
       }
-     
+
+      // 检查是否胜利
+      function check(pattern, color) {
+        // 一行相同胜利
+        for (let i = 0; i < 3; i++) {
+          let win = true
+          for (let j = 0; j < 3; j++) {
+            if (pattern[i][j] !== color) {
+              win = false
+            }
+          }
+          if (win) return true
+        }
+        // 一列相同胜利
+        for (let i = 0; i < 3; i++) {
+          let win = true
+          for (let j = 0; j < 3; j++) {
+            if (pattern[j][i] !== color) {
+              win = false
+            }
+          }
+          if (win) return true
+        }
+        // 右斜向相等
+        {
+          let win = true
+          for (let i = 0; i < 3; i++) {
+            if (pattern[i][i] !== color) {
+              win = false
+            }
+          }
+          if (win) return true
+        }
+        // 左斜向相等
+        {
+          let win = true
+          for (let i = 0; i < 3; i++) {
+            if (pattern[i][2 - i] !== color) {
+              win = false
+            }
+            
+          }
+          if (win) return true
+        }
+      }
+
+
+      function clone(data) {
+        return JSON.parse(JSON.stringify(data))
+      }
+
+      // 是否将要有棋子胜利
+      function willWin(pattern, color) {
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            // 有棋子不检查
+            if (pattern[i][j]) {
+              continue
+            }
+            let tmpPattern = clone(pattern)
+            tmpPattern[i][j] = color
+            if (check(tmpPattern, color)) {
+              return true
+            }
+          }
+        }
+        return false
+      }
 
       show()
     </script>
