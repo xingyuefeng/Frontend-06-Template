@@ -26,9 +26,9 @@
       // 1 是 ❌
       // 2 是 ⭕️
       const pattern = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
+        0, 0, 0,
+        0, 0, 0,
+        0, 0, 0,
       ]
       const symbol1 = '❌'
       const symbol2 = '⭕️'
@@ -50,7 +50,7 @@
             })
             cell.classList.add('cell')
             cell.innerText =
-              pattern[i][j] === 1 ? symbol1 : pattern[i][j] === 2 ? symbol2 : ''
+              pattern[i*3 + j] === 1 ? symbol1 : pattern[i*3 + j] === 2 ? symbol2 : ''
             boxEl.appendChild(cell)
           }
         }
@@ -58,15 +58,18 @@
 
       // 处理棋盘点击，渲染对应的符号
       function move(x, y) {
-        pattern[x][y] = color
+        
+        pattern[x*3 + y] = color
         if (check(pattern, color)) {
           alert(`${color === 1 ? symbol1 : symbol2}是胜利者`)
         }
         color = 3 - color
         show()
-        if (willWin(pattern, color)) {
-          alert(`${color === 1 ? symbol1 : symbol2}将要赢了`)
-        }
+        computerMove()
+        // if (willWin(pattern, color)) {
+        //   alert(`${color === 1 ? symbol1 : symbol2}将要赢了`)
+        // }
+       
       }
 
       // 检查是否胜利
@@ -75,7 +78,7 @@
         for (let i = 0; i < 3; i++) {
           let win = true
           for (let j = 0; j < 3; j++) {
-            if (pattern[i][j] !== color) {
+            if (pattern[i*3 + j] !== color) {
               win = false
             }
           }
@@ -85,7 +88,7 @@
         for (let i = 0; i < 3; i++) {
           let win = true
           for (let j = 0; j < 3; j++) {
-            if (pattern[j][i] !== color) {
+            if (pattern[j*3 + i] !== color) {
               win = false
             }
           }
@@ -95,7 +98,7 @@
         {
           let win = true
           for (let i = 0; i < 3; i++) {
-            if (pattern[i][i] !== color) {
+            if (pattern[i*3 + i] !== color) {
               win = false
             }
           }
@@ -105,7 +108,7 @@
         {
           let win = true
           for (let i = 0; i < 3; i++) {
-            if (pattern[i][2 - i] !== color) {
+            if (pattern[i*3 + 2 - i] !== color) {
               win = false
             }
             
@@ -116,7 +119,7 @@
 
 
       function clone(data) {
-        return JSON.parse(JSON.stringify(data))
+        return Object.create(data)
       }
 
       // 是否将要有棋子胜利
@@ -124,17 +127,83 @@
         for (let i = 0; i < 3; i++) {
           for (let j = 0; j < 3; j++) {
             // 有棋子不检查
-            if (pattern[i][j]) {
+            if (pattern[i*3  + j]) {
               continue
             }
             let tmpPattern = clone(pattern)
-            tmpPattern[i][j] = color
+            tmpPattern[i*3 + j] = color
             if (check(tmpPattern, color)) {
-              return true
+              return [j, i]
             }
           }
         }
-        return false
+        return null
+      }
+
+      // 寻找棋子最佳策略
+      function bestChoice(pattern, color) {
+        let p
+        // 将要胜利的result返回1
+        if (p = willWin(pattern, color)) {
+          return {
+            result: 1,
+            point: p
+          }
+        }
+
+        let result = -1
+        let point = null
+
+        outer: for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            // 有棋子不检查
+            if (pattern[i*3 + j]) {
+              continue
+            }
+            let tmpPattern = clone(pattern)
+            tmpPattern[i*3 + j] = color
+            //递归获取 这一步棋对面反向的结果
+            // 对面好结果 对于自己就是和棋或者差的
+            let r = bestChoice(tmpPattern, 3 - color).result
+            if (-r > result) {
+              result = -r
+              point = [j, i]
+            }
+            if (result === 1) {
+              // 重新开始最外层循环
+              break outer
+            }
+
+          
+          }
+        }
+
+
+        return {
+          // 没有点可以下的话 说明是和棋 返回0
+          result: point ? result : 0,
+          point: point
+        }
+
+        
+      }
+
+    // ai自动下棋
+      function computerMove() {
+        let choice = bestChoice(pattern, color)
+        console.log(choice)
+        // 如果有点可以赢 自动走
+        if (choice.point) {
+          pattern[choice.point[1] * 3 + choice.point[0]] = color
+        }
+        if (check(pattern, color)) {
+          if (check(pattern, color)) {
+            alert(`${color === 1 ? symbol1 : symbol2}是胜利者`)
+          }
+        }
+        color = 3 - color
+        show()
+       
       }
 
       show()

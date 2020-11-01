@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .lights > div {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    .green.light {
+      background-color: green;
+    }
+    .yellow.light {
+      background-color: yellow;
+    }
+    .red.light {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="lights">
+    <div class="red"></div>
+    <div class="yellow"></div>
+    <div class="green"></div>
+    <button id="next">下一个</button>
+  </div>
+  
+  <script>
+      // 重置灯 只亮需要的
+      function resetLights(currentLight) {
+        const greenEL = document.querySelector('.green')
+        const yellowEL = document.querySelector('.yellow')
+        const redEL = document.querySelector('.red')
+
+        greenEL.classList.remove('light')
+        yellowEL.classList.remove('light')
+        redEL.classList.remove('light')
+
+        if (currentLight === 'green') {
+          greenEL.classList.add('light')
+        } else if (currentLight === 'red') {
+          redEL.classList.add('light')
+        } else if (currentLight === 'yellow') {
+          yellowEL.classList.add('light')
+        }
+      }
+
+      function sleep(duration) {
+        return new Promise((resolve) => setTimeout(resolve, duration))
+      }
+
+      async function go() {
+        while(true) {
+          resetLights('green')
+          await sleep(1000)
+          resetLights('red')
+          await sleep(1000)
+          resetLights('yellow')
+          await sleep(1000)
+        }
+      }
+
+      function happen(el, eventName) {
+        return new Promise((resolve, reject) => {
+          el.addEventListener(eventName, resolve, { once: true } )
+        })
+      }
+
+      async function go1() {
+        const nextEl = document.querySelector('#next')
+        while(true) {
+          resetLights('green')
+          await happen(nextEl, 'click')
+          resetLights('red')
+          await happen(nextEl, 'click')
+          resetLights('yellow')
+          await happen(nextEl, 'click')
+        }
+      }
+  </script>
+</body>
+</html>

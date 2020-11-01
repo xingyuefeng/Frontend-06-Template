@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .lights > div {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+      .green.light {
+        background-color: green;
+      }
+      .yellow.light {
+        background-color: yellow;
+      }
+      .red.light {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lights">
+      <div class="red"></div>
+      <div class="yellow"></div>
+      <div class="green"></div>
+    </div>
+    <script>
+      // 重置灯 只亮需要的
+      function resetLights(currentLight) {
+        const greenEL = document.querySelector('.green')
+        const yellowEL = document.querySelector('.yellow')
+        const redEL = document.querySelector('.red')
+
+        greenEL.classList.remove('light')
+        yellowEL.classList.remove('light')
+        redEL.classList.remove('light')
+
+        if (currentLight === 'green') {
+          greenEL.classList.add('light')
+        } else if (currentLight === 'red') {
+          redEL.classList.add('light')
+        } else if (currentLight === 'yellow') {
+          yellowEL.classList.add('light')
+        }
+      }
+
+      function sleep(duration) {
+        return new Promise((resolve) => setTimeout(resolve, duration))
+      }
+
+      async function showGreen() {
+        resetLights('green')
+        await sleep(10000)
+        
+      }
+      async function showYellow() {
+        resetLights('yellow')
+        await sleep(2000)
+      }
+      async function showRed() {
+        resetLights('red')
+        await sleep(5000)
+      }
+
+      async function showLight() {
+        await showRed()
+        await showYellow()
+        await showGreen()
+      }
+      showLight()
+      setInterval(() => {
+        showLight()
+      }, 17000)
+    </script>
+  </body>
+</html>
