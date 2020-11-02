@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #app {
+        width: 701px;
+        display: flex;
+        margin: 30px;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 6px;
+        height: 6px;
+        background-color: gray;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        line-height: 6px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="btn">保存</button>
+    <script>
+      const mapData = localStorage.getItem('mapData')
+        ? JSON.parse(localStorage.getItem('mapData'))
+        : Array(10000).fill(0)
+
+      const app = document.querySelector('#app')
+
+      const btn = document.querySelector('#btn')
+
+      btn.addEventListener('click', () => {
+        localStorage.setItem('mapData', JSON.stringify(mapData))
+      })
+
+      for (let x = 0; x < 100; x++) {
+        for (let y = 0; y < 100; y++) {
+          let cell = document.createElement('div')
+          cell.classList.add('cell')
+          if (mapData[y * 100 + x] == 1) {
+            cell.style.backgroundColor = 'black'
+          }
+          app.appendChild(cell)
+          cell.addEventListener('mousemove', () => {
+            if (musedown) {
+              // 鼠标右键按住滑动清除地图
+              if (clear) {
+                cell.style.backgroundColor = ''
+                // 鼠标左键按住滑动添加墙
+                mapData[y * 100 + x] = 0
+              } else {
+                cell.style.backgroundColor = 'black'
+                mapData[y* 100 + x] = 1
+              }
+            }
+          })
+        }
+      }
+      // 是否按下鼠标左键
+      let musedown = false
+      // 鼠标右键按住清除地图
+      let clear = false
+      // 取消鼠标右键默认行为
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+      })
+
+      document.addEventListener('mousedown', (e) => {
+        musedown = true
+        // 3为鼠标右键 清除地图
+        clear = e.which === 3
+      })
+      document.addEventListener('mouseup', () => {
+        musedown = false
+      })
+    </script>
+  </body>
+</html>
