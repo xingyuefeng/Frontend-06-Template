@@ -21,7 +21,7 @@
         background-color: gray;
         border-bottom: 1px solid white;
         border-right: 1px solid white;
-        line-height: 6px;
+        line-height: 7px;
         vertical-align: middle;
       }
     </style>
@@ -59,7 +59,7 @@
                 mapData[y * 100 + x] = 0
               } else {
                 cell.style.backgroundColor = 'black'
-                mapData[y* 100 + x] = 1
+                mapData[y * 100 + x] = 1
               }
             }
           })
@@ -83,43 +83,56 @@
         musedown = false
       })
 
+      function sleep(duration) {
+        return new Promise((resolve) => setTimeout(resolve, duration))
+      }
       // 广度优先算法
-      function path(map, start, end) {
+      async function findPath(map, start, end) {
         const queue = [start]
-
-        function insert(x, y) {
+        // 浅拷贝
+        const table = Object.create(map)
+        async function insert(x, y, pre) {
           // 到达边界不处理
-          if (x < 0 || x >=100 || y < 0 || y >=100 ) {
+          if (x < 0 || x >= 100 || y < 0 || y >= 100) {
             return
           }
           // 如果有障碍物 或者已经插入到栈中跳过不做处理
-          if (map[y*100 + x]) {
+          if (table[y * 100 + x]) {
             return
           }
-          // 搜索过的状态设置为2
-          map[y*100 + x] = 2
-          queue.push([x, y])
+        
+          app.children[y * 100 + x].style.backgroundColor = 'skyblue'
 
+          table[y * 100 + x] = pre
+          queue.push([x, y])
         }
-        while(queue.length) {
+        while (queue.length) {
           let [x, y] = queue.shift()
-          console.log(queue)
           // 终点停止搜索 返回true
           if (x === end[0] && y === end[1]) {
-            return true
+            let path = []
+            while (x !== start[0] || y !== start[1]) {
+              path.push(map[y * 100 + x]);
+              [x, y] = table[y * 100 + x];
+              await sleep(30)
+              app.children[y * 100 + x].style.backgroundColor = 'pink'
+            }
+            return path
           }
           // 当前点的周围四个点插入
-          insert(x, y + 1)
-          insert(x, y - 1)
-          insert(x - 1, y)
-          insert(x + 1, y)
-        }
-        return false
-       
-      }
+          await insert(x - 1, y, [x, y])
+          await insert(x, y - 1, [x, y])
+          await insert(x + 1, y, [x, y])
+          await insert(x, y + 1, [x, y])
 
- 
-      
+          // 斜点
+          await insert(x - 1, y - 1, [x, y])
+          await insert(x + 1, y - 1, [x, y])
+          await insert(x - 1, y + 1, [x, y])
+          await insert(x + 1, y + 1, [x, y])
+        }
+        return null
+      }
     </script>
   </body>
 </html>

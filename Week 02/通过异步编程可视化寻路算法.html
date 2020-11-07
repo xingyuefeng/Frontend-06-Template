@@ -21,7 +21,7 @@
         background-color: gray;
         border-bottom: 1px solid white;
         border-right: 1px solid white;
-        line-height: 6px;
+        line-height: 7px;
         vertical-align: middle;
       }
     </style>
@@ -83,11 +83,14 @@
         musedown = false
       })
 
+      function sleep(duration) {
+        return new Promise((resolve) => setTimeout(resolve, duration))
+      }
       // 广度优先算法
-      function path(map, start, end) {
+      async function findPath(map, start, end) {
         const queue = [start]
 
-        function insert(x, y) {
+       async function insert(x, y) {
           // 到达边界不处理
           if (x < 0 || x >=100 || y < 0 || y >=100 ) {
             return
@@ -96,29 +99,32 @@
           if (map[y*100 + x]) {
             return
           }
+          await sleep(30)
           // 搜索过的状态设置为2
+          app.children[y*100 + x].style.backgroundColor = 'skyblue'
           map[y*100 + x] = 2
           queue.push([x, y])
 
         }
         while(queue.length) {
           let [x, y] = queue.shift()
-          console.log(queue)
           // 终点停止搜索 返回true
           if (x === end[0] && y === end[1]) {
             return true
           }
           // 当前点的周围四个点插入
-          insert(x, y + 1)
-          insert(x, y - 1)
-          insert(x - 1, y)
-          insert(x + 1, y)
+          await insert(x - 1, y)
+          await insert(x, y - 1)
+          await insert(x + 1, y)  
+          await insert(x, y + 1)
+          
+          
+         
         }
         return false
-       
       }
 
- 
+      
       
     </script>
   </body>
