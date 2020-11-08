@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #app {
+        width: 701px;
+        display: flex;
+        margin: 30px;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 6px;
+        height: 6px;
+        background-color: gray;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        line-height: 7px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="btn">保存</button>
+    <script>
+      // 获取到数组最小值 数据结构
+      class Sorted {
+        constructor(data, compare) {
+          this.data = data.slice()
+          this.compare = compare || ( (a, b) => a-b)
+        }
+
+        take() {
+          if (!this.data.length) {
+            // 直接return因为数据结构上来讲 null 也是可以的
+            return
+          }
+          let min = this.data[0]
+          let minIndex = 0
+          for (let i = 1; i < this.data.length; i++) {
+            if (this.compare(this.data[i], min) < 0) {
+              min = this.data[i]
+              minIndex = i;
+            }
+          }
+          // 最后一个值赋值给最小的值， 然后删除最后一个值， 删除数组效率最高
+          this.data[minIndex] = this.data[this.data.length - 1]
+          this.data.pop()
+          return min
+        }
+        give(v) {
+          this.data.push(v)
+        }
+      }
+    </script>
+  </body>
+</html>

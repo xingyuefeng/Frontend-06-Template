@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      #app {
+        width: 701px;
+        display: flex;
+        margin: 30px;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 6px;
+        height: 6px;
+        background-color: gray;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        line-height: 7px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="btn">保存</button>
+    <script>
+      const mapData = localStorage.getItem('mapData')
+        ? JSON.parse(localStorage.getItem('mapData'))
+        : Array(10000).fill(0)
+
+      const app = document.querySelector('#app')
+
+      const btn = document.querySelector('#btn')
+
+      btn.addEventListener('click', () => {
+        localStorage.setItem('mapData', JSON.stringify(mapData))
+      })
+
+      for (let y = 0; y < 100; y++) {
+        for (let x = 0; x < 100; x++) {
+          let cell = document.createElement('div')
+          cell.classList.add('cell')
+          if (mapData[y * 100 + x] == 1) {
+            cell.style.backgroundColor = 'black'
+          }
+          app.appendChild(cell)
+          cell.addEventListener('mousemove', () => {
+            if (musedown) {
+              // 鼠标右键按住滑动清除地图
+              if (clear) {
+                cell.style.backgroundColor = ''
+                // 鼠标左键按住滑动添加墙
+                mapData[y * 100 + x] = 0
+              } else {
+                cell.style.backgroundColor = 'black'
+                mapData[y * 100 + x] = 1
+              }
+            }
+          })
+        }
+      }
+      // 是否按下鼠标左键
+      let musedown = false
+      // 鼠标右键按住清除地图
+      let clear = false
+      // 取消鼠标右键默认行为
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+      })
+
+      document.addEventListener('mousedown', (e) => {
+        musedown = true
+        // 3为鼠标右键 清除地图
+        clear = e.which === 3
+      })
+      document.addEventListener('mouseup', () => {
+        musedown = false
+      })
+
+      class Sorted {
+        constructor(data, compare) {
+          this.data = data.slice()
+          this.compare = compare || ( (a, b) => a-b)
+        }
+
+        take() {
+          if (!this.data.length) {
+            // 直接return因为数据结构上来讲 null 也是可以的
+            return
+          }
+          let min = this.data[0]
+          let minIndex = 0
+          for (let i = 1; i < this.data.length; i++) {
+            if (this.compare(this.data[i], min) < 0) {
+              min = this.data[i]
+              minIndex = i;
+            }
+          }
+          // 最后一个值赋值给最小的值， 然后删除最后一个值， 删除数组效率最高
+          this.data[minIndex] = this.data[this.data.length - 1]
+          this.data.pop()
+          return min
+        }
+        give(v) {
+          this.data.push(v)
+        }
+      }
+
+      function sleep(duration) {
+        return new Promise((resolve) => setTimeout(resolve, duration))
+      }
+      // 广度优先算法
+      async function findPath(map, start, end) {
+        const queue = new Sorted([start], (a, b) => distance(a) - distance(b))
+     
+        // 浅拷贝
+        const table = Object.create(map)
+        async function insert(x, y, pre) {
+          // 到达边界不处理
+          if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+            return
+          }
+          // 如果有障碍物 或者已经插入到栈中跳过不做处理
+          if (table[y * 100 + x]) {
+            return
+          }
+          await sleep(30)
+          app.children[y * 100 + x].style.backgroundColor = 'skyblue'
+
+          table[y * 100 + x] = pre
+          queue.give([x, y])
+        }
+
+        // 获取两点之间的距离 x轴的平方 + y轴的平方 不用开根号
+        function distance(point) {
+          return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2
+        }
+        while (queue.data.length) {
+          // 获取当前最小的坐标
+          
+          let [x, y] = queue.take()
+          
+          // 终点停止搜索 返回true
+          if (x === end[0] && y === end[1]) {
+            let path = []
+            while (x !== start[0] || y !== start[1]) {
+              path.push(map[y * 100 + x]);
+              [x, y] = table[y * 100 + x];
+              await sleep(30)
+              app.children[y * 100 + x].style.backgroundColor = 'pink'
+            }
+            return path
+          }
+          // 当前点的周围四个点插入
+          await insert(x - 1, y, [x, y])
+          await insert(x, y - 1, [x, y])
+          await insert(x + 1, y, [x, y])
+          await insert(x, y + 1, [x, y])
+
+          // 斜点
+          await insert(x - 1, y - 1, [x, y])
+          await insert(x + 1, y - 1, [x, y])
+          await insert(x - 1, y + 1, [x, y])
+          await insert(x + 1, y + 1, [x, y])
+        }
+        return null
+      }
+    </script>
+  </body>
+</html>
