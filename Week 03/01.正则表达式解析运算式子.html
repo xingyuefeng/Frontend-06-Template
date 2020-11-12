@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 正则式 查找任何指定的选项
+    var regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+
+    // 正则对应的类型
+    var dictionary = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-']
+
+    function tokenize(source) {
+      var result = null
+      while(true) {
+        // 如果 exec() 找到了匹配的文本，则返回一个结果数组。否则，返回 null。
+        // 此数组的第 0 个元素是与正则表达式相匹配的文本，第 1 个元素是与 RegExpObject 的第 1 个子表达式相匹配的文本（如果有的话），第 2 个元素是与 RegExpObject 的第 2 个子表达式相匹配的文本（如果有的话），以此类推。
+        result = regexp.exec(source)
+        if(!result) {
+          break
+        }
+        for (let i = 1; i <= dictionary.length; i++) {
+          if (result[i]) {
+            console.log(dictionary[i-1])
+          }
+        }
+
+        console.log(result)
+      }
+    }
+
+    tokenize('1024 + 10 * 25')
+
+  </script>
+</body>
+</html>
