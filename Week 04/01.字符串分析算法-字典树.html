@@ -1,0 +1,59 @@
+<script>
+  let $ = Symbol('$')
+
+  class Trie {
+    constructor() {
+      this.root = Object.create(null)
+    }
+
+    insert(word) {
+      let node = this.root
+      for (let c of word) {
+        // 没有当前字符串节点，新建一个
+        if (!node[c]) {
+          node[c] = Object.create(null)
+        }
+        // 用当前已有节点
+        node  = node[c]
+
+      }
+      
+       // 相同字符累加
+      if (!($ in node)) {
+        node[$] = 0;
+      }
+      node[$] ++
+    }
+
+    most() {
+      let max = 0
+      let maxWord = null;
+      let visit = (node, word) => {
+        if (node[$] && node[$] > max) {
+          max = node[$]
+          maxWord = word
+        }
+        for (let p in node) {
+          visit(node[p], word + p )
+        }
+      }
+      visit(this.root, '')
+      console.log(max, maxWord)
+    }
+  }
+
+  function randomWords(length) {
+    let w = ''
+    for (let i = 0; i < length; i++) {
+      w += String.fromCharCode(Math.random() * 26 + 'a'.charCodeAt(0) )
+    }
+    return w
+  }
+
+  let trie = new Trie()
+
+  for (let i = 0; i < 100000; i++) {
+    trie.insert(randomWords(4))
+  }
+
+</script>
