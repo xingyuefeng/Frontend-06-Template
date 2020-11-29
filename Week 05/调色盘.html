@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #box {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #ccc;
+    }
+  </style>
+  <script  src="./reactive.js"></script>
+</head>
+<body>
+  <input id="r" type="range"  min=0 max=255 />
+  <input id="g" type="range"  min=0 max=255 />
+  <input id="b" type="range"  min=0 max=255 />
+  <div id="box"></div>
+  <script>
+    let object = { r: 0, g: 0, b: 0}
+    let po = reactive(object)
+
+    effect(() => {
+      document.querySelector('#r').value = po.r
+    })
+    effect(() => {
+      document.querySelector('#g').value = po.g
+    })
+    effect(() => {
+      document.querySelector('#b').value = po.b
+    })
+
+    effect(() => {
+      document.querySelector('#box').style.backgroundColor = `rgb(${po.r}, ${po.g}, ${po.b})`
+    })
+
+    document.querySelector('#r').addEventListener('input', event => {
+      po.r = event.target.value
+    })
+    document.querySelector('#g').addEventListener('input', event => {
+      po.g = event.target.value
+    })
+    document.querySelector('#b').addEventListener('input', event => {
+      po.b = event.target.value
+    })
+  </script>
+</body>
+</html>
