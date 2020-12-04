@@ -112,7 +112,7 @@
 
       for (let range of ranges) {
         let rect = range.getBoundingClientRect()
-        let distance = (rect.x  - x) ** 2 + (rect.y - y) ** 2
+        let distance = (rect.x  - xc) ** 2 + (rect.y - y) ** 2
         if (distance < min) {
           nearst = range
           min = distance
