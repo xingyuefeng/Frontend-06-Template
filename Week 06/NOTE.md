@@ -72,3 +72,8 @@
 #### 命令型语言
 
 `C`,`C++`,`Python`,`JAVA`, `JavaScript`, `Ruby`, `Go`
+
+
+## 数据类型 
+
+7个基本的数据类型: `Number`, `String`, `Object`, `Null`, `Boolean`, `Undefined`, `Symbol`
