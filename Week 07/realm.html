@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>realm可视化</title>
+    <style>
+      #container {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g6/4.0.3/dist/g6.min.js"></script>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script>
+      const allObjects = [
+        'AggregateError',
+        'Array',
+        'ArrayBuffer',
+        'ArrayIteratorPrototype',
+        'AsyncFromSyncIteratorPrototype',
+        'AsyncFunction',
+        'AsyncGeneratorFunction',
+        'AsyncIteratorPrototype',
+        'Atomics',
+        'BigInt',
+        'BigInt64Array',
+        'BigUint64Array',
+        'Boolean',
+        'DataView',
+        'Date',
+        'decodeURI',
+        'decodeURIComponent',
+        'encodeURI',
+        'encodeURIComponent',
+        'Error',
+        'eval',
+        'EvalError',
+        'FinalizationRegistry',
+        'Float32Array',
+        'Float64Array',
+        'ForInIteratorPrototype',
+        'Function',
+        'GeneratorFunction',
+        'Int8Array',
+        'Int16Array',
+        'Int32Array',
+        'isFinite',
+        'isNaN',
+        'IteratorPrototype',
+        'JSON',
+        'Map',
+        'MapIteratorPrototype',
+        'Math',
+        'Number',
+        'Object',
+        'parseFloat',
+        'parseInt',
+        'Promise',
+        'Proxy',
+        'RangeError',
+        'ReferenceError',
+        'Reflect',
+        'RegExp',
+        'RegExpStringIteratorPrototype',
+        'Set',
+        'SetIteratorPrototype',
+        'SharedArrayBuffer',
+        'String',
+        'StringIteratorPrototype',
+        'Symbol',
+        'SyntaxError',
+        'ThrowTypeError',
+        'TypedArray',
+        'TypeError',
+        'Uint8Array',
+        'Uint8ClampedArray',
+        'Uint16Array',
+        'Uint32Array',
+        'URIError',
+        'WeakMap',
+        'WeakRef',
+        'WeakSet',
+      ]
+
+      const data = {
+        nodes: allObjects.map((itm) => ({
+          id: itm,
+          label: itm,
+          value: itm,
+        })),
+      }
+
+      const width = document.querySelector('#container').clientWidth
+      const height = document.querySelector('#container').clientHeight
+
+      const graph = new G6.Graph({
+        container: 'container',
+        width,
+        height,
+        layout: {
+          type: 'force',
+          nodeStrength: 30,
+          collideStrength: 0.7,
+          alphaDecay: 0.01,
+          preventOverlap: true,
+        },
+        modes: {
+          default: ['drag-node'],
+        },
+        defaultNode: {
+          size: [120, 120],
+        },
+      })
+
+      const nodes = data.nodes
+      const nodeMap = new Map()
+      const clusterMap = new Map()
+
+      function randomRgbaColor() {
+        //随机生成RGBA颜色
+        var r = Math.floor(Math.random() * 256) //随机生成256以内r值
+        var g = Math.floor(Math.random() * 256) //随机生成256以内g值
+        var b = Math.floor(Math.random() * 256) //随机生成256以内b值
+        var alpha = Math.random() //随机生成1以内a值
+        return `rgb(${r},${g},${b},${alpha})` //返回rgba(r,g,b,a)格式颜色
+      }
+
+      nodes.forEach((node) => {
+        nodeMap.set(node.id, node)
+        // // cluster
+        // if (node.cluster && clusterMap.get(node.cluster) === undefined) {
+        //   clusterMap.set(node.cluster, clusterId)
+        //   clusterId++
+        // }
+        const cid = clusterMap.get(node.cluster)
+        if (!node.style) node.style = {}
+        node.style.fill = randomRgbaColor()
+        node.style.stroke = randomRgbaColor()
+        node.x = width / 2 + 200 * (Math.random() - 0.5)
+        node.y = height / 2 + 200 * (Math.random() - 0.5)
+      })
+
+      graph.data(data)
+      graph.render()
+    </script>
+  </body>
+</html>
