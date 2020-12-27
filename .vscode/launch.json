@@ -1,0 +1,14 @@
+{
+  "configurations": [
+      {
+          "type": "node",
+          "request": "launch",
+          "name": "nodemon",
+          "runtimeExecutable": "nodemon",
+          "program": "${workspaceFolder}/Week 09/client.js",
+          "restart": true,
+          "console": "integratedTerminal",
+          "internalConsoleOptions": "neverOpen"
+      }
+  ]
+}
