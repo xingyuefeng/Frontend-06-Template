@@ -196,8 +196,9 @@ function emit(token) {
       // style标签
       if (top.tagName === 'style') {
         addCSSRules(top.children[0].content)
-			}
-			layout(top)
+
+      }
+      layout(top)
       stack.pop()
     }
     currentTextNode = null

@@ -5,7 +5,7 @@
           "request": "launch",
           "name": "nodemon",
           "runtimeExecutable": "nodemon",
-          "program": "${workspaceFolder}/Week 09/client.js",
+          "program": "${workspaceFolder}/Week 10/client.js",
           "restart": true,
           "console": "integratedTerminal",
           "internalConsoleOptions": "neverOpen"

@@ -19,13 +19,28 @@ http
 <head>
   <title>Document</title>
   <style>
-    div {
-      color: red
+    .box {
+      display: flex;
+      width: 200px;
+      height: 200px;
+    }
+    .a {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+    }
+    .b {
+      width: 100px;
+      height: 100px;
+      background-color: yellow;
     }
   </style>
 </head>
 <body>
-  <div>123</div>
+  <div class="box">
+    <div class="a"></div>
+    <div class="b"></div>
+  </div>
 </body>
 </html>`
         )
