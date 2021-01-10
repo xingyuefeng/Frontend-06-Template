@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <div id="id" class="class"></div>
+    </div>
+    <script>
+      function match(selector, element) {
+        if (!selector || !element) {
+          return false
+        }
+        // console.log(element)
+        let selectors = selector.split(' ').reverse()
+        for (let selector of selectors) {
+          let list = selector.match(/(#|.)?\w+/g)
+
+          for (let itm of list) {
+            if (itm.charAt(0) === '#') {
+              return element.id && element.id === itm.replace('#', '')
+            } else if (itm.charAt(0) === '.') {
+              return (
+                element.classList.length > 0 &&
+                Array.from(element.classList).includes(itm.replace('.', ''))
+              )
+            } else {
+              return element.tagName === itm.toUpperCase()
+            }
+          }
+        }
+
+        return false
+      }
+
+      console.log(match('div #id.class', document.getElementById('id')))
+    </script>
+  </body>
+</html>
