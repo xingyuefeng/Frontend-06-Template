@@ -82,7 +82,7 @@ export class Listener {
     element.addEventListener('touchcancel', (event) => {
       for (let touch of event.changedTouches) {
         let context = contexts.get(touch.identifier)
-        recognizer.cencel(touch, context)
+        recognizer.cancel(touch, context)
         contexts.delete(touch.identifier)
       }
     })
@@ -209,8 +209,8 @@ export class Recognizer {
     console.log('v--->', v)
   }
 
-  cencel(point, context) {
-    dispatch('cencel', {})
+  cancel(point, context) {
+    dispatch('cancel', {})
     clearTimeout(context.handler)
   }
 }
