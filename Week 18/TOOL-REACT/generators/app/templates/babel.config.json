@@ -1,0 +1,18 @@
+{
+  "presets": [
+    [
+      "@babel/preset-react"
+    ],
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": false
+      }
+    ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [ "istanbul" ]
+    }
+  }
+}
